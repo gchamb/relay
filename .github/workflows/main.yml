@@ -120,12 +120,12 @@ jobs:
           node-version: 18
           cache: npm
           cache-dependency-path: |
-            client/package-lock.json
+            web/package-lock.json
             functions/package-lock.json
       - name: Install Node Dependencies
         run: |
           npm --prefix functions ci
-          npm --prefix client ci
+          npm --prefix web ci
       - name: Build Functions
         run: npm --prefix functions run build
 
@@ -155,12 +155,12 @@ jobs:
           node-version: 18
           cache: npm
           cache-dependency-path: |
-            client/package-lock.json
+            web/package-lock.json
             functions/package-lock.json
       - name: Install Node Dependencies
         run: |
           npm --prefix functions ci
-          npm --prefix client ci
+          npm --prefix web ci
       - name: Build Functions
         run: npm --prefix functions run build
 
