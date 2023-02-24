@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "relay-dc44e",
+    "prod": "relay-bfaa1"
+  }
+}
