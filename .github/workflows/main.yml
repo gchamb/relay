@@ -109,14 +109,7 @@ jobs:
     name: Deploy to Development
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/development'
-    needs:
-      [
-        prettier,
-        lint-functions,  
-        build-functions,
-        lint-web,
-        build-web,
-      ]
+    needs: [prettier, lint-functions, build-functions, lint-web, build-web]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -151,14 +144,7 @@ jobs:
     name: Deploy to Production
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/production'
-    needs:
-      [
-        prettier,
-        lint-functions,
-        build-functions,
-        lint-web,
-        build-web,
-      ]
+    needs: [prettier, lint-functions, build-functions, lint-web, build-web]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
