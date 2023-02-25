@@ -44,7 +44,7 @@ export default function EmailDialog(props: EmailDialogProps) {
     const { value } = e.target;
 
     setPassword(value);
-    
+
     // shows validation error if empty
     // removes validation error not empty there was a message there previously
     if (value.trim() === "") {
