@@ -40,7 +40,7 @@ export const firestore = getFirestore(app);
 // export const analytics = getAnalytics(app);
 
 if (process.env.NEXT_PUBLIC_USE_EMULATORS === "true") {
-  connectFirestoreEmulator(firestore, "localhost", 8080);
-  connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
+  connectFirestoreEmulator(firestore, "127.0.0.1", 8080);
+  connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
   // connectFunctionsEmulator(functions, "localhost", 5001);
 }
