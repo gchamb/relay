@@ -10,7 +10,6 @@ import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 let firebaseConfig: FirebaseOptions;
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 if (process.env.NEXT_PUBLIC_FIREBASE_CONFIG === "development") {
-  console.log("IN DEVV");
   firebaseConfig = {
     apiKey: "AIzaSyDUO5xq_DVO0mX6hHAQa2BnivDj0CztTQs",
     authDomain: "relay-dc44e.firebaseapp.com",
@@ -21,7 +20,6 @@ if (process.env.NEXT_PUBLIC_FIREBASE_CONFIG === "development") {
     measurementId: "G-B5CRDYV6G4",
   };
 } else if (process.env.NEXT_PUBLIC_FIREBASE_CONFIG === "production") {
-  console.log("IN PROD");
   firebaseConfig = {
     apiKey: "AIzaSyAJI0zq4FxnYfiHePccRZcgZGy5caOLEu4",
     authDomain: "relay-bfaa1.firebaseapp.com",
@@ -40,10 +38,9 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const firestore = getFirestore(app);
 // export const analytics = getAnalytics(app);
-export const test = "Testing";
 
 if (process.env.NEXT_PUBLIC_USE_EMULATORS === "true") {
-  connectFirestoreEmulator(firestore, "localhost", 8080);
-  connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
+  connectFirestoreEmulator(firestore, "127.0.0.1", 8080);
+  connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
   // connectFunctionsEmulator(functions, "localhost", 5001);
 }
