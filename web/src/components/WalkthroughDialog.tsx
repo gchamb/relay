@@ -20,14 +20,24 @@ export default function WalkthroughDialog(props: WalkthroughDialogProps) {
   const [slide, setSlide] = useState<1 | 2>(1);
   const [nickname, setNickName] = useState("");
   const [profilePic, setProfilePic] = useState<File | null>(null);
-  const [validationError, setValidationError] = useState("");
+  const [validationError, setValidationError] = useState<{
+    usernameError: string;
+    profilePicError: string;
+    firebaseError: string;
+  }>({
+    usernameError: "",
+    profilePicError: "",
+    firebaseError: "",
+  });
 
   let { current } = useRef<HTMLInputElement | null>(null);
 
   const slideHandler = async () => {
     if (slide === 2) {
       if (profilePic === null) {
-        setValidationError("You must add a profile pic");
+        setValidationError((prev) => {
+          return { ...prev, profilePicError: "You must add a profile pic" };
+        });
         return;
       }
 
@@ -36,9 +46,14 @@ export default function WalkthroughDialog(props: WalkthroughDialogProps) {
         await createUserDoc(props.userId, nickname.trim());
       } catch (err) {
         if (err instanceof FirebaseError) {
-          setValidationError(err.message);
+          const firebaseError = err.message;
+          setValidationError((prev) => {
+            return { ...prev, firebaseError };
+          });
         } else {
-          setValidationError(String(err));
+          setValidationError((prev) => {
+            return { ...prev, firebaseError: String(err) };
+          });
         }
 
         return;
@@ -51,9 +66,14 @@ export default function WalkthroughDialog(props: WalkthroughDialogProps) {
         fileUploadSuccess = true;
       } catch (err) {
         if (err instanceof FirebaseError) {
-          setValidationError(err.message);
+          const firebaseError = err.message;
+          setValidationError((prev) => {
+            return { ...prev, firebaseError };
+          });
         } else {
-          setValidationError(String(err));
+          setValidationError((prev) => {
+            return { ...prev, firebaseError: String(err) };
+          });
         }
       }
 
@@ -100,7 +120,17 @@ export default function WalkthroughDialog(props: WalkthroughDialogProps) {
             </DialogHeader>
 
             <div className="flex flex-col gap-y-2">
-              {validationError !== "" && <p className="text-red-700 font-semibold text-center">{validationError}</p>}
+              {(validationError.firebaseError !== "" ||
+                validationError.profilePicError !== "" ||
+                validationError.usernameError !== "") && (
+                <p className="text-red-700 font-semibold text-center">
+                  {validationError.firebaseError !== ""
+                    ? validationError.firebaseError
+                    : validationError.profilePicError !== ""
+                    ? validationError.profilePicError
+                    : validationError.usernameError}
+                </p>
+              )}
               <div className="flex flex-col w-2/3 m-auto text-center gap-y-2">
                 <Label>Nickname</Label>
                 <Input
@@ -115,10 +145,14 @@ export default function WalkthroughDialog(props: WalkthroughDialogProps) {
                     const valid = usernameValidator(value);
 
                     if (!valid.valid) {
-                      setValidationError(valid.reason);
+                      setValidationError((prev) => {
+                        return { ...prev, usernameError: valid.reason };
+                      });
                     } else {
-                      if (validationError !== "") {
-                        setValidationError("");
+                      if (validationError.usernameError !== "") {
+                        setValidationError((prev) => {
+                          return { ...prev, usernameError: "" };
+                        });
                       }
                     }
                   }}
@@ -162,10 +196,14 @@ export default function WalkthroughDialog(props: WalkthroughDialogProps) {
                     const valid = fileValidator(file);
 
                     if (!valid.valid) {
-                      setValidationError(valid.reason);
+                      setValidationError((prev) => {
+                        return { ...prev, profilePicError: valid.reason };
+                      });
                     } else {
-                      if (validationError !== "") {
-                        setValidationError("");
+                      if (validationError.profilePicError !== "") {
+                        setValidationError((prev) => {
+                          return { ...prev, profilePicError: "" };
+                        });
                       }
                     }
 
@@ -192,7 +230,16 @@ export default function WalkthroughDialog(props: WalkthroughDialogProps) {
             </Button>
           )}
           {slide == 2 && nickname !== "" && profilePic !== null && (
-            <Button disabled={validationError !== ""} variant="default" type="button" onClick={slideHandler}>
+            <Button
+              disabled={
+                validationError.firebaseError !== "" ||
+                validationError.profilePicError !== "" ||
+                validationError.usernameError !== ""
+              }
+              variant="default"
+              type="button"
+              onClick={slideHandler}
+            >
               Save
             </Button>
           )}
