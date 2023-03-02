@@ -22,4 +22,3 @@ export type User = {
    */
   firstPlaces: number;
 };
-
