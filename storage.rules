@@ -1,8 +1,18 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    match /{allPaths=**} {
-      allow read, write: if false;
-    }
+     match /profile-pics/{pic}{
+
+        function userDocExists(){
+          return firestore.exists(/databases/(default)/documents/users/$(request.auth.uid))
+        }
+
+        function validPic() {
+          return pic.split('.*\\..*')[0] == request.auth.uid
+          && request.resource.size < 5 * 1024 * 1024 && request.resource.contentType.matches('image/.*');
+        }
+
+        allow create: if userDocExists() && validPic();
+      }
   }
 }
