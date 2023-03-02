@@ -3,6 +3,7 @@ import { FirebaseOptions, initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+import { connectStorageEmulator, getStorage } from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -37,10 +38,12 @@ if (process.env.NEXT_PUBLIC_FIREBASE_CONFIG === "development") {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const firestore = getFirestore(app);
+export const storage = getStorage(app);
 // export const analytics = getAnalytics(app);
 
 if (process.env.NEXT_PUBLIC_USE_EMULATORS === "true") {
   connectFirestoreEmulator(firestore, "127.0.0.1", 8080);
   connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
+  connectStorageEmulator(storage, "127.0.0.1", 9199);
   // connectFunctionsEmulator(functions, "localhost", 5001);
 }

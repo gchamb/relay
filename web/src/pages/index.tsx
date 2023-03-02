@@ -8,7 +8,7 @@ import { FirebaseError } from "firebase/app";
 import { transformError } from "@/lib/firebase/helpers";
 import { useRouter } from "next/router";
 
-export default function Home() {
+export default function App() {
   const router = useRouter();
   const [error, setError] = useState<{ method: "GOOGLE" | "EMAIL"; error: string } | undefined>();
 

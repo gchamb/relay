@@ -92,7 +92,7 @@ export default function EmailDialog(props: EmailDialogProps) {
       <DialogTrigger asChild>
         <Button variant="default">Sign in with Email</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" showX>
         <DialogHeader>
           <DialogTitle className="flex gap-2">
             <Label
