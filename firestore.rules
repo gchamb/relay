@@ -14,5 +14,9 @@ service cloud.firestore {
         allow create: if request.auth.uid == userId && validateUser();
         allow get, delete: if request.auth.uid == userId;
       }
+
+      match /games/{gameId}{
+        allow get: if true;
+      }
   }
 }
