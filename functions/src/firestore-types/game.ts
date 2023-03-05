@@ -60,7 +60,6 @@ export type Game = {
   standings?: uid[];
 };
 
-
 export function isTopic(value: string): value is Topics {
   if (value === "MATH") {
     return true;
