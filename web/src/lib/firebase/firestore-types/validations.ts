@@ -1,3 +1,5 @@
+import { Game, Topics } from "./game";
+
 export function usernameValidator(username: string): { valid: true } | { valid: false; reason: string } {
   if (username === "") {
     return { valid: false, reason: "Username must not be empty" };
@@ -46,4 +48,23 @@ export function fileValidator(file: File): { valid: true } | { valid: false; rea
   }
 
   return { valid: true };
+}
+
+export function isTopic(value: string): value is Topics {
+  if (value === "MATH") {
+    return true;
+  }
+
+  return false;
+}
+
+export function isCapacity(value: number): value is Game["capacity"] {
+  if (value < 1) {
+    return false;
+  }
+  if (value > 6) {
+    return false;
+  }
+
+  return true;
 }
