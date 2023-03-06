@@ -2,6 +2,7 @@ import * as functions from "firebase-functions";
 import { CreateGameResponse, isCreateGameRequest } from "./function-types/types";
 import { gameCollection, getGamePlayersCollection, userCollection } from "./firestore-types/references";
 import { Timestamp } from "firebase-admin/firestore";
+import { bucket } from "./admin";
 
 export const createGame = functions.https.onCall(async (data: unknown, context): Promise<CreateGameResponse> => {
   const { auth } = context;
@@ -24,6 +25,10 @@ export const createGame = functions.https.onCall(async (data: unknown, context):
     throw new functions.https.HttpsError("invalid-argument", "Invalid Create Game Request!");
   }
 
+  // get their profile pic
+  const profilePic = bucket.file(`profile-pics/${auth.uid}`).publicUrl();
+
+
   try {
     // create the game
     const gameDocRef = await gameCollection.add({
@@ -34,7 +39,8 @@ export const createGame = functions.https.onCall(async (data: unknown, context):
         [auth.uid]: {
           nickname: user.nickname,
           score: 0,
-          profilePic: "hello world", //TODO: remove this eventually
+          host: true,
+          profilePic,
         },
       },
       end: Timestamp.now(),
