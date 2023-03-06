@@ -12,6 +12,7 @@ export type PlayerPublic = {
   nickname: string;
   score: number;
   profilePic: string;
+  host?: true;
 };
 
 /**
