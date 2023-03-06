@@ -8,17 +8,13 @@ import { FirebaseError } from "firebase/app";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import type { User } from "@/lib/firebase/firestore-types/users";
+import { properCase } from "@/lib/helpers";
 
 export default function Home() {
   const user = useUser();
   const [userDoc, setUserDoc] = useState<User | undefined>(undefined);
   const [openModal, setOpenModal] = useState(false);
   const [openCreateModal, setOpenCreateModal] = useState(false);
-
-  const properCase = (name: string) => {
-    const firstChar = name.charAt(0).toUpperCase();
-    return firstChar + name.substring(1, name.length).toLowerCase();
-  };
 
   // fetching the current user doc
   // to check whether they have seen the walk through modal at all
