@@ -1,10 +1,13 @@
 import Loader from "@/components/Loader";
+import { Button } from "@/components/ui/Button";
 
-import { useGame } from "@/hooks/firebase";
+import { useGame, useUser } from "@/hooks/firebase";
+import { properCase } from "@/lib/helpers";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 
 export default function Game() {
+  const user = useUser();
   const router = useRouter();
   const gameId = useMemo(() => {
     if (typeof router.query.id !== "string") {
@@ -14,9 +17,9 @@ export default function Game() {
     return router.query.id;
   }, [router]);
 
-  const game = useGame(gameId ?? "");
+  const game = useGame(gameId ?? "", user?.uid);
 
-  if (game === undefined) {
+  if (game === undefined || user == null) {
     return (
       <div className="grid h-5/6 place-items-center">
         <Loader />
@@ -24,5 +27,35 @@ export default function Game() {
     );
   }
 
-  return <h1>Hi {game.topic}</h1>;
+  return (
+    <div className="grid gap-y-10 h-full md:h-5/6 gap-y-0">
+      <div className="self-center flex flex-col gap-y-2 text-center text-2xl">
+        <h1>
+          Topic is <span className="font-bold">{properCase(game.topic)}</span>
+        </h1>
+        <h1>
+          {Object.keys(game.playersPublic).length}/{game.capacity} Players
+        </h1>
+        {game.playersPublic[user.uid].host && (
+          <Button variant="outline" className="self-center">
+            Start Game
+          </Button>
+        )}
+      </div>
+      <div className="w-5/6 m-auto flex flex-wrap gap-3 justify-center">
+        {Object.entries(game.playersPublic).map(([uid, player], idx) => {
+          return (
+            <div className="flex flex-col text-center gap-y-2" key={idx}>
+              <img
+                className={`w-32 rounded-full ${uid === user.uid && "border-2 border-white"} md:w-52`}
+                src={player.profilePic}
+                alt={player.nickname}
+              />
+              <span>{player.nickname}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
