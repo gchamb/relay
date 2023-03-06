@@ -31,7 +31,7 @@ export function useUser() {
   return user;
 }
 
-export function useGame(gameId: string) {
+export function useGame(gameId: string, userId?: string) {
   const [gameData, setGameData] = useState<Game | undefined>();
   const router = useRouter();
 
@@ -55,11 +55,17 @@ export function useGame(gameId: string) {
         return;
       }
 
+      const uids = Object.keys(data.playersPublic);
+      if (userId !== undefined && !uids.includes(userId)) {
+        router.replace("/home");
+        return;
+      }
+
       setGameData(data);
     });
 
     return () => unsub();
-  }, [gameId, router]);
+  }, [gameId, router, userId]);
 
   return gameData;
 }
