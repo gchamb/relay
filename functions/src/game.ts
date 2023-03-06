@@ -28,7 +28,6 @@ export const createGame = functions.https.onCall(async (data: unknown, context):
   // get their profile pic
   const profilePic = bucket.file(`profile-pics/${auth.uid}`).publicUrl();
 
-
   try {
     // create the game
     const gameDocRef = await gameCollection.add({

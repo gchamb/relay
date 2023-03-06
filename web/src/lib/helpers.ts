@@ -8,4 +8,4 @@ export function cn(...inputs: ClassValue[]) {
 export function properCase(name: string) {
   const firstChar = name.charAt(0).toUpperCase();
   return firstChar + name.substring(1, name.length).toLowerCase();
-};
+}
