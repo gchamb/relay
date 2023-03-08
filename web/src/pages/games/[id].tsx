@@ -20,8 +20,8 @@ export default function Game() {
 
   const [game, error] = useGame(gameId, user?.uid);
 
-  if (error !== ""){
-    return <Error className="flex flex-col gap-y-2 h-5/6 items-center justify-center" error={error} />
+  if (error !== "") {
+    return <Error className="flex flex-col gap-y-2 h-5/6 items-center justify-center" error={error} />;
   }
 
   if (game === undefined || user == null) {

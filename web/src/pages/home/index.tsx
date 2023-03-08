@@ -59,11 +59,7 @@ export default function Home() {
           await fetchUserDoc();
         }}
       />
-      <CreateGameModal
-        open={openCreateModal}
-        userId={user.uid}
-        onClose={() => setOpenCreateModal(false)}
-      />
+      <CreateGameModal open={openCreateModal} userId={user.uid} onClose={() => setOpenCreateModal(false)} />
 
       {userDoc !== undefined && (
         <h1 className="self-center text-center text-2xl">Welcome {properCase(userDoc.nickname)}</h1>
