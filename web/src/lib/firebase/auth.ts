@@ -3,6 +3,7 @@ import {
   signInWithPopup,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
 import { auth } from "./app";
 
@@ -17,4 +18,8 @@ export function signInWithEmail(email: string, password: string) {
 
 export function signUpWithEmail(email: string, password: string) {
   return createUserWithEmailAndPassword(auth, email, password);
+}
+
+export async function onSignOut() {
+  await signOut(auth);
 }
