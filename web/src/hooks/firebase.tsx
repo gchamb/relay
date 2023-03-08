@@ -31,8 +31,9 @@ export function useUser() {
   return user;
 }
 
-export function useGame(gameId: string, userId?: string) {
+export function useGame(gameId: string, userId?: string): [Game | undefined, string] {
   const [gameData, setGameData] = useState<Game | undefined>();
+  const [error, setError] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -45,13 +46,8 @@ export function useGame(gameId: string, userId?: string) {
     const unsub = onSnapshot(gameDocRef, (doc) => {
       const data = doc.data();
 
-      if (!doc.exists()) {
-        router.replace("/");
-        return;
-      }
-
-      if (data === undefined) {
-        router.replace("/");
+      if (!doc.exists() || data === undefined) {
+        setError("Game doesn't exist!");
         return;
       }
 
@@ -67,5 +63,5 @@ export function useGame(gameId: string, userId?: string) {
     return () => unsub();
   }, [gameId, router, userId]);
 
-  return gameData;
+  return [gameData, error];
 }

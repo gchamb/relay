@@ -1,3 +1,4 @@
+import Error from "@/components/Error";
 import Loader from "@/components/Loader";
 import { Button } from "@/components/ui/Button";
 
@@ -11,13 +12,17 @@ export default function Game() {
   const router = useRouter();
   const gameId = useMemo(() => {
     if (typeof router.query.id !== "string") {
-      return;
+      return "";
     }
 
     return router.query.id;
   }, [router]);
 
-  const game = useGame(gameId ?? "", user?.uid);
+  const [game, error] = useGame(gameId, user?.uid);
+
+  if (error !== ""){
+    return <Error className="flex flex-col gap-y-2 h-5/6 items-center justify-center" error={error} />
+  }
 
   if (game === undefined || user == null) {
     return (
