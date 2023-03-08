@@ -1,6 +1,7 @@
 import Loader from "@/components/Loader";
 import WalkthroughDialog from "@/components/WalkthroughDialog";
 import CreateGameModal from "@/components/CreateGameDialog";
+import Head from "next/head";
 
 import { useUser } from "@/hooks/firebase";
 import { getUserDoc } from "@/lib/firebase/users";
@@ -46,6 +47,9 @@ export default function Home() {
 
   return (
     <div className="h-5/6 grid ">
+      <Head>
+        <title>Home</title>
+      </Head>
       {/* Check if we should show the modal  */}
       <WalkthroughDialog
         open={openModal}
@@ -58,9 +62,7 @@ export default function Home() {
       <CreateGameModal
         open={openCreateModal}
         userId={user.uid}
-        onClose={() => {
-          setOpenCreateModal(false);
-        }}
+        onClose={() => setOpenCreateModal(false)}
       />
 
       {userDoc !== undefined && (
