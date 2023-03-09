@@ -27,7 +27,7 @@ export const createGame = functions.https.onCall(async (data: unknown, context):
 
   // get their profile pic
   const profilePic = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(
-      `profile-pics/${auth.uid}`
+    `profile-pics/${auth.uid}`
   )}?alt=media`;
 
   try {

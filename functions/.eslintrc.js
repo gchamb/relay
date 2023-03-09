@@ -31,5 +31,6 @@ module.exports = {
     "max-len": ["error", { code: 120 }],
     "no-warning-comments": "warn",
     "linebreak-style": 0,
+    indent: 0,
   },
 };
