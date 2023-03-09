@@ -2,6 +2,7 @@ import * as functions from "firebase-functions";
 import { CreateGameResponse, isCreateGameRequest } from "./function-types/types";
 import { gameCollection, getGamePlayersCollection, userCollection } from "./firestore-types/references";
 import { Timestamp } from "firebase-admin/firestore";
+import { bucket } from "./admin";
 
 export const createGame = functions.https.onCall(async (data: unknown, context): Promise<CreateGameResponse> => {
   const { auth } = context;
@@ -25,8 +26,18 @@ export const createGame = functions.https.onCall(async (data: unknown, context):
   }
 
   // get their profile pic
-  const profilePic =
-    "https://firebasestorage.googleapis.com/v0/b/relay-dc44e.appspot.com/o/" + `profile-pics%${auth.uid}?alt=media`;
+  const response = await bucket.file(`profile-pics/${auth.uid}`).get();
+
+  // for some reason metadata has the property mediaLink but doesn't show it in typescript
+  const metadata: object = response[1];
+
+  let profilePic: string;
+
+  if ("mediaLink" in metadata && typeof metadata.mediaLink === "string") {
+    profilePic = metadata.mediaLink;
+  } else {
+    throw new functions.https.HttpsError("not-found", "You do not have a profile pic");
+  }
 
   try {
     // create the game
