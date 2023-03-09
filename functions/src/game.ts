@@ -3,6 +3,7 @@ import { CreateGameResponse, isCreateGameRequest } from "./function-types/types"
 import { gameCollection, getGamePlayersCollection, userCollection } from "./firestore-types/references";
 import { Timestamp } from "firebase-admin/firestore";
 import { bucket } from "./admin";
+// import { getProfilePic } from "./helper";
 
 export const createGame = functions.https.onCall(async (data: unknown, context): Promise<CreateGameResponse> => {
   const { auth } = context;
@@ -26,9 +27,11 @@ export const createGame = functions.https.onCall(async (data: unknown, context):
   }
 
   // get their profile pic
-  const profilePic = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(
-    `profile-pics/${auth.uid}`
-  )}?alt=media`;
+  // TODO: uncomment this when merging
+  // const profilePic = getProfilePic(auth.uid);
+
+  // TODO: comment this when merging and uncomment it during development
+  const profilePic = bucket.file(`profile-pics/${auth.uid}`).publicUrl();
 
   try {
     // create the game

@@ -52,11 +52,11 @@ export default function Game() {
           return (
             <div className="flex flex-col text-center gap-y-2" key={idx}>
               <img
-                className={`w-32 rounded-full ${uid === user.uid && "border-2 border-white"} md:w-52`}
+                className="w-32 rounded-full md:w-52"
                 src={player.profilePic}
                 alt={player.nickname}
               />
-              <span>{player.nickname}</span>
+              <span className={`${uid === user.uid && "text-red-400"}`}>{player.nickname}</span>
             </div>
           );
         })}
