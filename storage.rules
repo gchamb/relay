@@ -13,6 +13,7 @@ service firebase.storage {
         }
 
         allow create: if userDocExists() && validPic();
+        allow get;
       }
   }
 }

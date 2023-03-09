@@ -2,7 +2,6 @@ import * as functions from "firebase-functions";
 import { CreateGameResponse, isCreateGameRequest } from "./function-types/types";
 import { gameCollection, getGamePlayersCollection, userCollection } from "./firestore-types/references";
 import { Timestamp } from "firebase-admin/firestore";
-import { bucket } from "./admin";
 
 export const createGame = functions.https.onCall(async (data: unknown, context): Promise<CreateGameResponse> => {
   const { auth } = context;
@@ -26,7 +25,8 @@ export const createGame = functions.https.onCall(async (data: unknown, context):
   }
 
   // get their profile pic
-  const profilePic = bucket.file(`profile-pics/${auth.uid}`).publicUrl();
+  const profilePic =
+    "https://firebasestorage.googleapis.com/v0/b/relay-dc44e.appspot.com/o/" + `profile-pics%${auth.uid}?alt=media`;
 
   try {
     // create the game
