@@ -7,3 +7,7 @@ initializeApp();
 export const firestoreDB = getFirestore();
 export const storage = getStorage();
 export const bucket = storage.bucket();
+
+const makePublic = async () => await bucket.makePublic();
+
+makePublic().catch((err) => console.log(err));
