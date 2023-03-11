@@ -1,9 +1,12 @@
 import { auth } from "@/lib/firebase/app";
-import { User } from "firebase/auth";
-import { useEffect, useState, createContext, ReactNode, FC, useContext } from "react";
+import { User as FirebaseUser } from "firebase/auth";
+import { useEffect, useState, createContext, ReactNode, useContext } from "react";
 import { useRouter } from "next/router";
+import { User } from "@/lib/firebase/firestore-types/users";
+import { doc, onSnapshot } from "firebase/firestore";
+import { userCollection } from "@/lib/firebase/references/firestore";
 
-const userContext = createContext<User | null>(null);
+const userContext = createContext<FirebaseUser | null>(null);
 
 /**
  *
@@ -11,7 +14,7 @@ const userContext = createContext<User | null>(null);
  *
  */
 export function UserProvider(props: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<FirebaseUser | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -31,9 +34,46 @@ export function UserProvider(props: { children: ReactNode }) {
 }
 
 /**
- * 
+ *
  * @returns the current state of the user using the context provider
  */
 export function useUser() {
   return useContext(userContext);
+}
+
+/**
+ *
+ * @returns the invites the user has received
+ * @note it is subscribe so it's realtime updates
+ */
+export function useSubscribeInvites() {
+  const user = useUser();
+  const [invites, setInvites] = useState<User["invites"]>([]);
+
+  useEffect(() => {
+    if (user == null) {
+      return;
+    }
+
+    const userDocRef = doc(userCollection, user.uid);
+    const unsub = onSnapshot(
+      userDocRef,
+      (doc) => {
+        const userData = doc.data();
+        if (userData === undefined) {
+          return;
+        }
+
+        setInvites(userData.invites);
+      },
+      (err) => {
+        console.error(err);
+        console.log("ERROR IOS HERE");
+      }
+    );
+
+    return () => unsub();
+  }, [user]);
+
+  return invites;
 }
