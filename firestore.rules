@@ -13,6 +13,7 @@ service cloud.firestore {
       match /users/{userId}{
         allow create: if request.auth.uid == userId && validateUser();
         allow get, delete: if request.auth.uid == userId;
+        allow list;
       }
 
       match /games/{gameId}{
