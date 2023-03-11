@@ -5,7 +5,7 @@ export type CreateGameResponse = { gameId: string };
 
 export type JoinGameRequest = { gameId: string };
 
-export type InvitePlayerRequest = { gameId: string; invitee: uid }
+export type InvitePlayerRequest = { gameId: string; invitee: uid };
 
 export function isCreateGameRequest(data: unknown): data is CreateGameRequest {
   if (data === null || data == undefined || typeof data !== "object") {
@@ -29,8 +29,7 @@ export function isJoinGameRequest(data: unknown): data is JoinGameRequest {
     return false;
   }
 
-  return "gameId" in data &&
-    typeof data.gameId === "string";
+  return "gameId" in data && typeof data.gameId === "string";
 }
 
 export function isInvitePlayerRequest(data: unknown): data is InvitePlayerRequest {
@@ -38,7 +37,5 @@ export function isInvitePlayerRequest(data: unknown): data is InvitePlayerReques
     return false;
   }
 
-  return "gameId" in data &&
-    typeof data.gameId === "string" &&
-    "invitee" in data && typeof data.invitee === "string";
+  return "gameId" in data && typeof data.gameId === "string" && "invitee" in data && typeof data.invitee === "string";
 }

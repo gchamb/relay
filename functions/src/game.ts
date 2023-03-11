@@ -1,7 +1,9 @@
 import * as functions from "firebase-functions";
 import {
-  CreateGameResponse, isCreateGameRequest,
-  isInvitePlayerRequest, isJoinGameRequest,
+  CreateGameResponse,
+  isCreateGameRequest,
+  isInvitePlayerRequest,
+  isJoinGameRequest,
 } from "./function-types/types";
 import { gameCollection, userCollection } from "./firestore-types/references";
 import { FieldValue, Timestamp } from "firebase-admin/firestore";

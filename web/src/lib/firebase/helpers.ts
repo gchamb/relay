@@ -24,8 +24,7 @@ export function transformError(errorCode: string): { method: "GOOGLE" | "EMAIL";
 }
 
 export async function isUniqueNickname(nickname: string): Promise<boolean> {
-
-  const q = query(userCollection, where("nickname", "==", nickname))
+  const q = query(userCollection, where("nickname", "==", nickname));
 
   const userSnapshot = await getDocs(q);
 

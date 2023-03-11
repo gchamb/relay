@@ -1,3 +1,1 @@
-export default function InviteInbox() {
-    
-}
+export default function InviteInbox() {}

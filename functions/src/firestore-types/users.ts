@@ -27,5 +27,5 @@ export type User = {
   /**
    * list of invites to games
    */
-  invites: { gameId: string; host: string, sentAt: Timestamp }[]
+  invites: { gameId: string; host: string; sentAt: Timestamp }[];
 };

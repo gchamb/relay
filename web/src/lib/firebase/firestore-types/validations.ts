@@ -44,13 +44,13 @@ function isSquareDimens(file: File): Promise<boolean> {
   return new Promise((resolve, reject) => {
     tempImage.onload = () => {
       if (tempImage.width !== tempImage.height) {
-        resolve(false)
+        resolve(false);
       } else {
-        resolve(true)
+        resolve(true);
       }
 
       tempImage.onerror = reject;
-    }
+    };
   });
 }
 
@@ -66,14 +66,11 @@ export async function fileValidator(file: File): Promise<{ valid: true } | { val
     return { valid: false, reason: "File is too large" };
   }
 
-
-
   const isSquare = await isSquareDimens(file);
 
   if (!isSquare) {
     return { valid: false, reason: "File must have square dimensions" };
   }
-
 
   return { valid: true };
 }
