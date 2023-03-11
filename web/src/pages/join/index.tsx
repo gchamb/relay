@@ -53,6 +53,10 @@ export default function Join() {
       router.push(`/games/${code}`);
     } catch (err) {
       if (err instanceof FirebaseError) {
+        if (err.message === "You already in the game!") {
+          router.replace(`/games/${code}`);
+          return;
+        }
         setError(err.message);
       } else {
         setError(String(err));
