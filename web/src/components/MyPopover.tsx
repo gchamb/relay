@@ -4,6 +4,8 @@ type MyPopoverProps = {
   slotTrigger: React.ReactNode;
   slotContent: React.ReactNode;
   beforeClosing?: () => void;
+  contentClassName?: string;
+  align?: "start" | "end" | "center";
 };
 
 export default function MyPopover(props: MyPopoverProps) {
@@ -16,7 +18,9 @@ export default function MyPopover(props: MyPopoverProps) {
       }}
     >
       <PopoverTrigger asChild>{props.slotTrigger}</PopoverTrigger>
-      <PopoverContent>{props.slotContent}</PopoverContent>
+      <PopoverContent align={props.align} className={props.contentClassName}>
+        {props.slotContent}
+      </PopoverContent>
     </Popover>
   );
 }
