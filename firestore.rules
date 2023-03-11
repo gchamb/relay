@@ -1,13 +1,13 @@
 service cloud.firestore {
   match /databases/{database}/documents {
      function validateUser(){
-        return request.resource.data.keys().hasOnly(['nickname','correct', 'incorrect', 'firstPlaces'])
+        return request.resource.data.keys().hasOnly(['nickname','correct', 'incorrect', 'firstPlaces', 'invites'])
           && request.resource.data.nickname is string && request.resource.data.nickname.size() >= 3 
           && request.resource.data.nickname.size() <= 8 
           && request.resource.data.nickname == request.resource.data.nickname.trim()
           && request.resource.data.nickname.matches('[A-Za-z0-9-_ ]+')
           && request.resource.data.correct == 0 && request.resource.data.incorrect == 0
-          && request.resource.data.firstPlaces == 0;
+          && request.resource.data.firstPlaces == 0 && request.resource.data.invites.size() == 0;
       }
 
       match /users/{userId}{

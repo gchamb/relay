@@ -15,6 +15,7 @@ export const createUserDoc = async (userId: string, nickname: string) => {
     correct: 0,
     incorrect: 0,
     firstPlaces: 0,
+    invites: [],
   });
 };
 
