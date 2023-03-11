@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase-admin/firestore";
+
 /**
  * the type of documents `/users/{uid}`
  */
@@ -21,4 +23,9 @@ export type User = {
    * the amount of first place finishes total
    */
   firstPlaces: number;
+
+  /**
+   * list of invites to games
+   */
+  invites: { gameId: string; host: string, sentAt: Timestamp }[]
 };
