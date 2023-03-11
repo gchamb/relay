@@ -7,7 +7,7 @@ const userContext = createContext<User | null>(null);
 
 /**
  *
- * @returns the current state of the user
+ * @returns the context provider for this be used throughout the entire application
  *
  */
 export function UserProvider(props: { children: ReactNode }) {
@@ -30,6 +30,10 @@ export function UserProvider(props: { children: ReactNode }) {
   return <userContext.Provider value={user}>{props.children}</userContext.Provider>;
 }
 
+/**
+ * 
+ * @returns the current state of the user using the context provider
+ */
 export function useUser() {
   return useContext(userContext);
 }

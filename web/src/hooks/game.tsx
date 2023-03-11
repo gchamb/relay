@@ -9,6 +9,12 @@ export type PreviewCompetitors = {
   nickname: string;
 };
 
+/**
+ * 
+ * @param gameId 
+ * @param userId 
+ * @returns the game doc data and error 
+ */
 export function useGame(gameId: string, userId?: string): [Game | undefined, string] {
   const [gameData, setGameData] = useState<Game | undefined>();
   const [error, setError] = useState("");
@@ -44,6 +50,11 @@ export function useGame(gameId: string, userId?: string): [Game | undefined, str
   return [gameData, error];
 }
 
+/**
+ * 
+ * @param nickname 
+ * @returns a list of users that match the nickname param
+ */
 export function useFindCompetitors(nickname: string): PreviewCompetitors[] {
   const [users, setUsers] = useState<PreviewCompetitors[]>([]);
   useEffect(() => {
