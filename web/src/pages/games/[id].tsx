@@ -119,7 +119,7 @@ export default function Game() {
       <div className="w-5/6 m-auto flex flex-wrap gap-3 justify-center">
         {Object.entries(game.playersPublic).map(([uid, player], idx) => {
           return (
-            <div className="flex flex-col text-center gap-y-2" key={idx}>
+            <div key={idx} className="flex flex-col text-center gap-y-2">
               <img className="w-32 rounded-full md:w-52" src={player.profilePic} alt={player.nickname} />
               <span className={`${uid === user.uid && "text-red-400 font-semibold"}`}>{player.nickname}</span>
             </div>
@@ -127,7 +127,7 @@ export default function Game() {
         })}
       </div>
       <div className="flex justify-center gap-x-2">
-        <StatefulButton icon="copy" action={copyJoinLink} />
+        {!game.inviteOnly && <StatefulButton icon="copy" action={copyJoinLink} />}
         {game.playersPublic[user.uid].host && game.inviteOnly && (
           <MyPopover
             beforeClosing={() => {
@@ -141,47 +141,52 @@ export default function Game() {
               </Button>
             }
             slotContent={
-              <div className="flex flex-col text-center gap-y-2">
-                <h2 className="font-semibold">Add Competitors</h2>
-                {inviteStatus.valid ? (
-                  <p className="text-green-500">{inviteStatus.message}</p>
+              <>
+                {inviteStatus.loading ? (
+                  <Loader size={10} />
                 ) : (
-                  <p className="text-red-700">{inviteStatus.message}</p>
-                )}
-                <Input
-                  className="text-center"
-                  value={searchCompetitors}
-                  onChange={(e) => setSearchCompetitors(e.target.value)}
-                />
-                {competitors.length !== 0 && (
-                  <div className="grid gap-y-2 p-2 rounded-md">
-                    {competitors.map(({ nickname, userId }, idx) => {
-                      return (
-                        <>
-                          <div className="flex justify-between items-center" key={idx}>
-                            <span className="text-lg">{nickname}</span>
-                            <span>#{userId.substring(userId.length - 4, userId.length)}</span>
-                            <Button
-                              variant="outline"
-                              className="w-10 p-0 rounded-full"
-                              onClick={async () => await invitePlayerHandler(userId)}
-                              disabled={inviteStatus.loading}
-                            >
-                              <Plus />
-                            </Button>
-                          </div>
-                          <Separator />
-                        </>
-                      );
-                    })}
+                  <div className="flex flex-col text-center gap-y-2">
+                    <h2 className="font-semibold">Add Competitors</h2>
+                    {inviteStatus.valid ? (
+                      <p className="text-green-500">{inviteStatus.message}</p>
+                    ) : (
+                      <p className="text-red-700 font-semibold">{inviteStatus.message}</p>
+                    )}
+                    <Input
+                      className="text-center"
+                      value={searchCompetitors}
+                      onChange={(e) => setSearchCompetitors(e.target.value)}
+                    />
+                    {competitors.length !== 0 && (
+                      <div className="grid gap-y-2 p-2 rounded-md">
+                        {competitors.map(({ nickname, userId }, idx) => {
+                          return (
+                            <div key={idx} className="flex flex-col gap-y-2">
+                              <div className="flex justify-between items-center">
+                                <span className="text-lg">{nickname}</span>
+                                <span>#{userId.substring(userId.length - 4, userId.length)}</span>
+                                <Button
+                                  variant="outline"
+                                  className="w-10 p-0 rounded-full"
+                                  onClick={async () => await invitePlayerHandler(userId)}
+                                >
+                                  <Plus />
+                                </Button>
+                              </div>
+                              <Separator />
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                 )}
-              </div>
+              </>
             }
           />
         )}
 
-        {sharable && <StatefulButton icon="share" action={shareUrl} />}
+        {!game.inviteOnly && <>{sharable && <StatefulButton icon="share" action={shareUrl} />}</>}
       </div>
     </div>
   );
