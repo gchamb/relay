@@ -4,11 +4,12 @@ import { Label } from "@radix-ui/react-label";
 import { Input } from "./ui/Input";
 import { useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { fileValidator, usernameValidator } from "@/lib/firebase/firestore-types/validations";
+import { fileValidator, nicknameValidator } from "@/lib/firebase/firestore-types/validations";
 import { createUserDoc, deleteUserDoc } from "@/lib/firebase/users";
 import { FirebaseError } from "firebase/app";
 import { getProfilePicRef } from "@/lib/firebase/references/storage";
 import { uploadBytes } from "firebase/storage";
+import { isUniqueNickname } from "@/lib/firebase/helpers";
 
 type WalkthroughDialogProps = {
   userId: string;
@@ -21,11 +22,11 @@ export default function WalkthroughDialog(props: WalkthroughDialogProps) {
   const [nickname, setNickName] = useState("");
   const [profilePic, setProfilePic] = useState<File | null>(null);
   const [validationError, setValidationError] = useState<{
-    usernameError: string;
+    nicknameError: string;
     profilePicError: string;
     firebaseError: string;
   }>({
-    usernameError: "",
+    nicknameError: "",
     profilePicError: "",
     firebaseError: "",
   });
@@ -43,6 +44,11 @@ export default function WalkthroughDialog(props: WalkthroughDialogProps) {
 
       // create their user doc with the nickname and zeros for stats
       try {
+        const isUnique = await isUniqueNickname(nickname.trim());
+        if (!isUnique) {
+          throw new FirebaseError("not-unique", "Nickname must be unique");
+        }
+
         await createUserDoc(props.userId, nickname.trim());
       } catch (err) {
         if (err instanceof FirebaseError) {
@@ -122,13 +128,13 @@ export default function WalkthroughDialog(props: WalkthroughDialogProps) {
             <div className="flex flex-col gap-y-2">
               {(validationError.firebaseError !== "" ||
                 validationError.profilePicError !== "" ||
-                validationError.usernameError !== "") && (
+                validationError.nicknameError !== "") && (
                 <p className="text-red-700 font-semibold text-center">
                   {validationError.firebaseError !== ""
                     ? validationError.firebaseError
                     : validationError.profilePicError !== ""
                     ? validationError.profilePicError
-                    : validationError.usernameError}
+                    : validationError.nicknameError}
                 </p>
               )}
               <div className="flex flex-col w-2/3 m-auto text-center gap-y-2">
@@ -142,16 +148,16 @@ export default function WalkthroughDialog(props: WalkthroughDialogProps) {
                     setNickName(value);
 
                     // validate
-                    const valid = usernameValidator(value);
+                    const valid = nicknameValidator(value);
 
                     if (!valid.valid) {
                       setValidationError((prev) => {
-                        return { ...prev, usernameError: valid.reason };
+                        return { ...prev, nicknameError: valid.reason };
                       });
                     } else {
-                      if (validationError.usernameError !== "") {
+                      if (validationError.nicknameError !== "") {
                         setValidationError((prev) => {
-                          return { ...prev, usernameError: "" };
+                          return { ...prev, nicknameError: "" };
                         });
                       }
                     }
@@ -185,7 +191,7 @@ export default function WalkthroughDialog(props: WalkthroughDialogProps) {
                   }}
                   type="file"
                   accept="image/*"
-                  onChange={(e) => {
+                  onChange={async (e) => {
                     const { files } = e.target;
 
                     if (files === null || files.length === 0) {
@@ -193,7 +199,7 @@ export default function WalkthroughDialog(props: WalkthroughDialogProps) {
                     }
 
                     const file = files[0];
-                    const valid = fileValidator(file);
+                    const valid = await fileValidator(file);
 
                     if (!valid.valid) {
                       setValidationError((prev) => {
@@ -231,11 +237,7 @@ export default function WalkthroughDialog(props: WalkthroughDialogProps) {
           )}
           {slide == 2 && nickname !== "" && profilePic !== null && (
             <Button
-              disabled={
-                validationError.firebaseError !== "" ||
-                validationError.profilePicError !== "" ||
-                validationError.usernameError !== ""
-              }
+              disabled={validationError.profilePicError !== "" || validationError.nicknameError !== ""}
               variant="default"
               type="button"
               onClick={slideHandler}
