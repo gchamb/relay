@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { useUser } from "@/hooks/firebase";
+import { useUser } from "@/hooks/user";
 import { Button } from "./ui/Button";
 import { onSignOut } from "@/lib/firebase/auth";
 import { useRouter } from "next/router";
