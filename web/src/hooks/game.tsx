@@ -10,10 +10,10 @@ export type PreviewCompetitors = {
 };
 
 /**
- * 
- * @param gameId 
- * @param userId 
- * @returns the game doc data and error 
+ *
+ * @param gameId
+ * @param userId
+ * @returns the game doc data and error
  */
 export function useGame(gameId: string, userId?: string): [Game | undefined, string] {
   const [gameData, setGameData] = useState<Game | undefined>();
@@ -27,22 +27,28 @@ export function useGame(gameId: string, userId?: string): [Game | undefined, str
 
     const gameDocRef = doc(gamesCollection, gameId);
 
-    const unsub = onSnapshot(gameDocRef, (doc) => {
-      const data = doc.data();
+    const unsub = onSnapshot(
+      gameDocRef,
+      (doc) => {
+        const data = doc.data();
 
-      if (!doc.exists() || data === undefined) {
-        setError("Game doesn't exist!");
-        return;
+        if (!doc.exists() || data === undefined) {
+          setError("Game doesn't exist!");
+          return;
+        }
+
+        const uids = Object.keys(data.playersPublic);
+        if (userId !== undefined && !uids.includes(userId)) {
+          router.replace(`/join?code=${gameId}`);
+          return;
+        }
+
+        setGameData(data);
+      },
+      (err) => {
+        console.error(err);
       }
-
-      const uids = Object.keys(data.playersPublic);
-      if (userId !== undefined && !uids.includes(userId)) {
-        router.replace(`/join?code=${gameId}`);
-        return;
-      }
-
-      setGameData(data);
-    });
+    );
 
     return () => unsub();
   }, [gameId, router, userId]);
@@ -51,8 +57,8 @@ export function useGame(gameId: string, userId?: string): [Game | undefined, str
 }
 
 /**
- * 
- * @param nickname 
+ *
+ * @param nickname
  * @returns a list of users that match the nickname param
  */
 export function useFindCompetitors(nickname: string): PreviewCompetitors[] {
