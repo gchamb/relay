@@ -3,16 +3,18 @@ import WalkthroughDialog from "@/components/WalkthroughDialog";
 import CreateGameModal from "@/components/CreateGameDialog";
 import Head from "next/head";
 
-import { useUser } from "@/hooks/firebase";
+import { useUser } from "@/hooks/user";
 import { getUserDoc } from "@/lib/firebase/users";
 import { FirebaseError } from "firebase/app";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import type { User } from "@/lib/firebase/firestore-types/users";
 import { properCase } from "@/lib/helpers";
+import { useRouter } from "next/router";
 
 export default function Home() {
   const user = useUser();
+  const router = useRouter();
   const [userDoc, setUserDoc] = useState<User | undefined>(undefined);
   const [openModal, setOpenModal] = useState(false);
   const [openCreateModal, setOpenCreateModal] = useState(false);
@@ -70,7 +72,7 @@ export default function Home() {
         <Button size="xxl" disabled={userDoc === undefined} onClick={() => setOpenCreateModal(true)}>
           Create Game
         </Button>
-        <Button size="xxl" disabled={userDoc === undefined}>
+        <Button size="xxl" disabled={userDoc === undefined} onClick={() => router.push("/join")}>
           Join Game
         </Button>
       </div>
