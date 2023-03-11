@@ -6,7 +6,6 @@ import { useUser } from "@/hooks/user";
 import { useRouter } from "next/router";
 import { Home } from "lucide-react";
 
-
 export default function Nav() {
   const user = useUser();
   const { pathname } = useRouter();

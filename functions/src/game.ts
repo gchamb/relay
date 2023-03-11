@@ -93,7 +93,6 @@ export const joinGame = functions.https.onCall(async (data: unknown, context): P
     const players = Object.keys(game.playersPublic);
     const playersLength = players.length;
 
-
     if (players.includes(auth.uid)) {
       throw new functions.https.HttpsError("failed-precondition", "You already in the game!");
     }
@@ -105,7 +104,6 @@ export const joinGame = functions.https.onCall(async (data: unknown, context): P
     if (game.inviteOnly && (game.invitees === undefined || !game.invitees.includes(auth.uid))) {
       throw new functions.https.HttpsError("failed-precondition", "You must be invited to join!");
     }
-
 
     if (game.capacity === playersLength) {
       throw new functions.https.HttpsError("failed-precondition", "Game has reached capacity!");
@@ -187,7 +185,6 @@ export const invitePlayer = functions.https.onCall(async (data: unknown, context
     });
   });
 });
-
 
 export const deleteInvite = functions.https.onCall(async (data: unknown, context): Promise<void> => {
   const { auth } = context;

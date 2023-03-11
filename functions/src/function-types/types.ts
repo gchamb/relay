@@ -48,10 +48,15 @@ export function isDeleteInviteRequest(data: unknown): data is DeleteInviteReques
     return false;
   }
 
-
-  return "gameId" in data && typeof data.gameId === "string" &&
-    "host" in data && typeof data.host === "string" &&
-    "sentAt" in data && typeof data.sentAt === "object" &&
-    data.sentAt !== null && "nanoseconds" in data.sentAt &&
-    "seconds" in data.sentAt;
+  return (
+    "gameId" in data &&
+    typeof data.gameId === "string" &&
+    "host" in data &&
+    typeof data.host === "string" &&
+    "sentAt" in data &&
+    typeof data.sentAt === "object" &&
+    data.sentAt !== null &&
+    "nanoseconds" in data.sentAt &&
+    "seconds" in data.sentAt
+  );
 }
