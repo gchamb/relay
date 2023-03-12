@@ -66,7 +66,7 @@ export type Game = {
   inviteOnly: boolean;
 
   /**
-   * whether the game is set to invite only
+   * the users that were invited
    */
   invitees?: uid[];
 };

@@ -9,7 +9,7 @@ import { useMemo, useState } from "react";
 import { deleteInvite, joinGame } from "@/lib/firebase/references/functions";
 import { useRouter } from "next/router";
 import { FirebaseError } from "firebase/app";
-import { User } from "@/lib/firebase/firestore-types/users";
+import { Invite } from "@/lib/firebase/firestore-types/users";
 
 export default function InviteInbox() {
   const [readInvites, setReadInvites] = useState(0);
@@ -44,7 +44,7 @@ export default function InviteInbox() {
     }
   };
 
-  const deleteInviteHandler = async (invite: User["invites"][number]) => {
+  const deleteInviteHandler = async (invite: Invite) => {
     setLoading(true);
 
     try {

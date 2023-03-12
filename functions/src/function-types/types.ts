@@ -1,5 +1,5 @@
 import { Game, Topics, isCapacity, isTopic, uid } from "../firestore-types/game";
-import { User } from "../firestore-types/users";
+import { Invite } from "../firestore-types/users";
 
 export type CreateGameRequest = { topic: Topics; capacity: Game["capacity"]; inviteOnly: boolean };
 export type CreateGameResponse = { gameId: string };
@@ -8,7 +8,7 @@ export type JoinGameRequest = { gameId: string };
 
 export type InvitePlayerRequest = { gameId: string; invitee: uid };
 
-export type DeleteInviteRequest = User["invites"][number];
+export type DeleteInviteRequest = Invite;
 
 export function isCreateGameRequest(data: unknown): data is CreateGameRequest {
   if (data === null || data == undefined || typeof data !== "object") {

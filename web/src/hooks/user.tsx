@@ -2,7 +2,7 @@ import { auth } from "@/lib/firebase/app";
 import { User as FirebaseUser } from "firebase/auth";
 import { useEffect, useState, createContext, ReactNode, useContext } from "react";
 import { useRouter } from "next/router";
-import { User } from "@/lib/firebase/firestore-types/users";
+import { Invite } from "@/lib/firebase/firestore-types/users";
 import { doc, onSnapshot } from "firebase/firestore";
 import { userCollection } from "@/lib/firebase/references/firestore";
 
@@ -48,7 +48,7 @@ export function useUser() {
  */
 export function useSubscribeInvites() {
   const user = useUser();
-  const [invites, setInvites] = useState<User["invites"]>([]);
+  const [invites, setInvites] = useState<Invite[]>([]);
 
   useEffect(() => {
     if (user == null) {

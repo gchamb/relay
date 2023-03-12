@@ -1,5 +1,11 @@
 import { Timestamp } from "firebase-admin/firestore";
 
+export type Invite = {
+  gameId: string;
+  host: string;
+  sentAt: Timestamp
+}
+
 /**
  * the type of documents `/users/{uid}`
  */
@@ -27,5 +33,5 @@ export type User = {
   /**
    * list of invites to games
    */
-  invites: { gameId: string; host: string; sentAt: Timestamp }[];
+  invites: Invite[];
 };
