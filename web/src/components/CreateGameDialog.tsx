@@ -8,6 +8,7 @@ import { createGame } from "@/lib/firebase/references/functions";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
 import { FirebaseError } from "firebase/app";
+import { Checkbox } from "./ui/Checkbox";
 
 type CreateGameDialogProps = {
   userId: string;
@@ -18,6 +19,7 @@ type CreateGameDialogProps = {
 export default function CreateGameModal(props: CreateGameDialogProps) {
   const [topic, setTopic] = useState<Topics>("MATH");
   const [capacity, setCapacity] = useState<Game["capacity"]>(1);
+  const [inviteOnly, setInviteOnly] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
@@ -26,7 +28,7 @@ export default function CreateGameModal(props: CreateGameDialogProps) {
     setLoading(true);
 
     try {
-      const { data } = await createGame({ topic, capacity });
+      const { data } = await createGame({ topic, capacity, inviteOnly });
       router.replace(`/games/${data.gameId}`);
       props.onClose();
     } catch (err) {
@@ -40,6 +42,13 @@ export default function CreateGameModal(props: CreateGameDialogProps) {
     }
   };
 
+  const clearState = () => {
+    setCapacity(1);
+    setInviteOnly(false);
+    setTopic("MATH");
+    setError("");
+  };
+
   return (
     <Dialog open={props.open}>
       <DialogContent className="sm:max-w-[425px]">
@@ -48,57 +57,72 @@ export default function CreateGameModal(props: CreateGameDialogProps) {
           <DialogDescription className="text-center">Set how the game should play.</DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col items-center gap-y-2 md:flex-row gap-x-2">
-          <Select
-            onValueChange={(value) => {
-              if (!isTopic(value)) {
-                return;
-              }
+        <div className="flex flex-col items-center gap-y-2">
+          <div className="flex flex-col gap-y-2 md:flex-row gap-x-2">
+            <Select
+              defaultValue="math"
+              onValueChange={(value) => {
+                if (!isTopic(value)) {
+                  return;
+                }
 
-              setTopic(value);
-            }}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Subject" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="math">Math</SelectItem>
-            </SelectContent>
-          </Select>
+                setTopic(value);
+              }}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Subject" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="math">Math</SelectItem>
+              </SelectContent>
+            </Select>
 
-          <Select
-            onValueChange={(value) => {
-              const valueAsNumber = Number(value);
-              if (isNaN(valueAsNumber) || !isCapacity(valueAsNumber)) {
-                return;
-              }
+            <Select
+              onValueChange={(value) => {
+                const valueAsNumber = Number(value);
+                if (isNaN(valueAsNumber) || !isCapacity(valueAsNumber)) {
+                  return;
+                }
 
-              setCapacity(valueAsNumber);
-            }}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Capacity" />
-            </SelectTrigger>
-            <SelectContent>
-              {Array.from([1, 2, 3, 4, 5, 6]).map((item, idx) => {
-                return (
-                  <SelectItem key={idx} value={item.toString()}>
-                    {item}
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
+                setCapacity(valueAsNumber);
+              }}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Capacity" />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.from([1, 2, 3, 4, 5, 6]).map((item, idx) => {
+                  return (
+                    <SelectItem key={idx} value={item.toString()}>
+                      {item}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center gap-x-2">
+            <Checkbox checked={inviteOnly} id="inviteOnly" onClick={() => setInviteOnly((prev) => !prev)} />
+            <label htmlFor="inviteOnly">Invite Only</label>
+          </div>
         </div>
 
         <DialogFooter style={{ justifyContent: "center", margin: "auto" }} className="flex-row gap-2 ">
           {!loading && (
-            <Button variant="default" type="button" onClick={() => props.onClose()}>
+            <Button
+              variant="default"
+              type="button"
+              onClick={() => {
+                clearState();
+                props.onClose();
+              }}
+            >
               Cancel
             </Button>
           )}
 
-          <Button variant="default" type="button" disabled={error !== ""} onClick={createGameHandler}>
+          <Button variant="default" type="button" disabled={error !== "" || loading} onClick={createGameHandler}>
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Create
           </Button>

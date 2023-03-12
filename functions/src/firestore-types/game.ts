@@ -59,6 +59,16 @@ export type Game = {
    * @note only applies if the lobby's capacity is greater than 1
    */
   standings?: uid[];
+
+  /**
+   * whether the game is set to invite only
+   */
+  inviteOnly: boolean;
+
+  /**
+   * the users that were invited
+   */
+  invitees?: uid[];
 };
 
 export function isTopic(value: string): value is Topics {

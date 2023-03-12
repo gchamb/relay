@@ -1,41 +1,60 @@
 import { Game, Topics } from "./game";
 
-export function usernameValidator(username: string): { valid: true } | { valid: false; reason: string } {
-  if (username === "") {
-    return { valid: false, reason: "Username must not be empty" };
+export function nicknameValidator(nickname: string): { valid: true } | { valid: false; reason: string } {
+  if (nickname === "") {
+    return { valid: false, reason: "Nickname must not be empty" };
   }
-  if (username.length < 3) {
+  if (nickname.length < 3) {
     return {
       valid: false,
-      reason: "Username must be at least 3 characters long",
+      reason: "Nickname must be at least 3 characters long",
     };
   }
 
-  if (username.length > 8) {
+  if (nickname.length > 8) {
     return {
       valid: false,
-      reason: "Username must be at most 8 characters long",
+      reason: "Nickname must be at most 8 characters long",
     };
   }
 
-  if (username !== username.trim()) {
+  if (nickname !== nickname.trim()) {
     return {
       valid: false,
-      reason: "Username must not contain leading or trailing whitespace",
+      reason: "Nickname must not contain leading or trailing whitespace",
     };
   }
 
-  if (username.search(/[^A-Za-z0-9-_ ]+/) >= 0) {
+  if (nickname.search(/[^A-Za-z0-9-_ ]+/) >= 0) {
     return {
       valid: false,
-      reason: "Username must not have special characters",
+      reason: "Nickname must not have special characters",
     };
   }
 
   return { valid: true };
 }
 
-export function fileValidator(file: File): { valid: true } | { valid: false; reason: string } {
+function isSquareDimens(file: File): Promise<boolean> {
+  const createImageUrl = URL.createObjectURL(file);
+
+  const tempImage = new Image();
+  tempImage.src = createImageUrl;
+
+  return new Promise((resolve, reject) => {
+    tempImage.onload = () => {
+      if (tempImage.width !== tempImage.height) {
+        resolve(false);
+      } else {
+        resolve(true);
+      }
+
+      tempImage.onerror = reject;
+    };
+  });
+}
+
+export async function fileValidator(file: File): Promise<{ valid: true } | { valid: false; reason: string }> {
   const mimetype = file.type.split("/")[0];
   const LIMIT = 1_000_000 * 5;
 
@@ -45,6 +64,12 @@ export function fileValidator(file: File): { valid: true } | { valid: false; rea
 
   if (file.size > LIMIT) {
     return { valid: false, reason: "File is too large" };
+  }
+
+  const isSquare = await isSquareDimens(file).catch((err) => false);
+
+  if (!isSquare) {
+    return { valid: false, reason: "File must have square dimensions" };
   }
 
   return { valid: true };

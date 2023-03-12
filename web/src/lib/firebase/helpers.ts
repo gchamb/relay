@@ -1,4 +1,6 @@
 import { AuthErrorCodes } from "firebase/auth";
+import { getDocs, query, where } from "firebase/firestore";
+import { userCollection } from "./references/firestore";
 
 export function transformError(errorCode: string): { method: "GOOGLE" | "EMAIL"; error: string } {
   switch (errorCode) {
@@ -19,4 +21,12 @@ export function transformError(errorCode: string): { method: "GOOGLE" | "EMAIL";
     default:
       return { method: "EMAIL", error: errorCode };
   }
+}
+
+export async function isUniqueNickname(nickname: string): Promise<boolean> {
+  const q = query(userCollection, where("nickname", "==", nickname));
+
+  const userSnapshot = await getDocs(q);
+
+  return userSnapshot.empty;
 }

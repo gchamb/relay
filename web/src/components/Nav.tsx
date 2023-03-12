@@ -1,9 +1,10 @@
 import Link from "next/link";
+import InviteInbox from "./InviteInbox";
+import Account from "./Account";
 
-import { useUser } from "@/hooks/firebase";
-import { Button } from "./ui/Button";
-import { onSignOut } from "@/lib/firebase/auth";
+import { useUser } from "@/hooks/user";
 import { useRouter } from "next/router";
+import { Home } from "lucide-react";
 
 export default function Nav() {
   const user = useUser();
@@ -14,10 +15,10 @@ export default function Nav() {
   }
 
   return (
-    <nav className="w-11/12 flex items-center m-auto">
+    <nav className="w-11/12 flex items-center m-auto pt-3">
       {pathname === "/" ? (
         <Link className="ml-auto" href="/home">
-          <Button variant="link">Home</Button>
+          <Home />
         </Link>
       ) : (
         <>
@@ -27,9 +28,10 @@ export default function Nav() {
             </span>
           </Link>
 
-          <Button className="ml-auto" variant="link" onClick={async () => await onSignOut()}>
-            Logout
-          </Button>
+          <div className="w-24 flex items-center justify-between ml-auto">
+            <InviteInbox />
+            <Account />
+          </div>
         </>
       )}
     </nav>
