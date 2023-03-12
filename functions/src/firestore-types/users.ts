@@ -3,8 +3,8 @@ import { Timestamp } from "firebase-admin/firestore";
 export type Invite = {
   gameId: string;
   host: string;
-  sentAt: Timestamp
-}
+  sentAt: Timestamp;
+};
 
 /**
  * the type of documents `/users/{uid}`
