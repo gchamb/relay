@@ -68,7 +68,6 @@ export function useSubscribeInvites() {
       },
       (err) => {
         console.error(err);
-        console.log("ERROR IOS HERE");
       }
     );
 

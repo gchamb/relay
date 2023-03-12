@@ -66,7 +66,7 @@ export async function fileValidator(file: File): Promise<{ valid: true } | { val
     return { valid: false, reason: "File is too large" };
   }
 
-  const isSquare = await isSquareDimens(file);
+  const isSquare = await isSquareDimens(file).catch((err) => false);
 
   if (!isSquare) {
     return { valid: false, reason: "File must have square dimensions" };
