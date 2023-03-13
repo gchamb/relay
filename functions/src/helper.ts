@@ -7,5 +7,7 @@ export function getProfilePic(userId: string) {
   }
 
   // get the profile pic in production mode
-  return `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(`profile-pics/${userId}`)}?alt=media`;
+  return `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(
+    `profile-pics/${userId}`
+  )}?alt=media`;
 }
