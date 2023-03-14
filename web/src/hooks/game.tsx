@@ -1,8 +1,8 @@
-import { gamesCollection, userCollection } from "@/lib/firebase/references/firestore";
-import { doc, endAt, getDocs, limit, onSnapshot, orderBy, query, startAt } from "firebase/firestore";
+import { getGameDoc, getPlayerRoom, userCollection } from "@/lib/firebase/references/firestore";
+import { endAt, getDocs, limit, onSnapshot, orderBy, query, startAt } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { Game, uid } from "@/lib/firebase/firestore-types/game";
+import { Game, Room, uid } from "@/lib/firebase/firestore-types/game";
 
 export type PreviewCompetitors = {
   userId: uid;
@@ -15,7 +15,7 @@ export type PreviewCompetitors = {
  * @param userId
  * @returns the game doc data and error
  */
-export function useGame(gameId: string, userId?: string): [Game | undefined, string] {
+export function useGame(gameId: string, userId?: uid): [Game | undefined, string] {
   const [gameData, setGameData] = useState<Game | undefined>();
   const [error, setError] = useState("");
   const router = useRouter();
@@ -25,7 +25,7 @@ export function useGame(gameId: string, userId?: string): [Game | undefined, str
       return;
     }
 
-    const gameDocRef = doc(gamesCollection, gameId);
+    const gameDocRef = getGameDoc(gameId);
 
     const unsub = onSnapshot(
       gameDocRef,
@@ -90,4 +90,30 @@ export function useFindCompetitors(nickname: string): PreviewCompetitors[] {
   }, [nickname]);
 
   return users;
+}
+
+export function usePlayerRoom(gameId: string, userId: uid) {
+  const [room, setRoom] = useState<Room>();
+
+  useEffect(() => {
+    const roomDocRef = getPlayerRoom(gameId, userId);
+
+    const unsub = onSnapshot(
+      roomDocRef,
+      (doc) => {
+        const roomData = doc.data();
+
+        if (roomData === undefined) {
+          return;
+        }
+
+        setRoom(roomData);
+      },
+      (err) => console.error(err.message)
+    );
+
+    return () => unsub();
+  }, [userId, gameId]);
+
+  return room;
 }

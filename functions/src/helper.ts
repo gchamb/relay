@@ -1,4 +1,5 @@
 import { bucket } from "./admin";
+import { operations } from "./firestore-types/game";
 
 export function getProfilePic(userId: string) {
   // get the profile pic in development mode
@@ -10,4 +11,14 @@ export function getProfilePic(userId: string) {
   return `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(
     `profile-pics/${userId}`
   )}?alt=media`;
+}
+
+export function generateRandomOperation() {
+  return operations[Math.floor(Math.random() * operations.length)];
+}
+
+export function generateRandomNumbers(): [number, number] {
+  const numOne = Math.floor(Math.random() * 100);
+  const numTwo = Math.floor(Math.random() * 100);
+  return [numOne, numTwo];
 }
