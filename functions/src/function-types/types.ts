@@ -4,11 +4,13 @@ import { Invite } from "../firestore-types/users";
 export type CreateGameRequest = { topic: Topics; capacity: Game["capacity"]; inviteOnly: boolean };
 export type CreateGameResponse = { gameId: string };
 
-export type JoinGameRequest = { gameId: string };
+export type JoinGameRequest = CreateGameResponse;
 
 export type InvitePlayerRequest = { gameId: string; invitee: uid };
 
 export type DeleteInviteRequest = Invite;
+
+export type StartGameRequest = JoinGameRequest;
 
 export function isCreateGameRequest(data: unknown): data is CreateGameRequest {
   if (data === null || data == undefined || typeof data !== "object") {
@@ -59,4 +61,12 @@ export function isDeleteInviteRequest(data: unknown): data is DeleteInviteReques
     "nanoseconds" in data.sentAt &&
     "seconds" in data.sentAt
   );
+}
+
+export function isStartGameRequest(data: unknown): data is StartGameRequest {
+  if (data === null || data == undefined || typeof data !== "object") {
+    return false;
+  }
+
+  return "gameId" in data && typeof data.gameId === "string";
 }

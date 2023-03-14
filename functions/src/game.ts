@@ -5,11 +5,13 @@ import {
   isDeleteInviteRequest,
   isInvitePlayerRequest,
   isJoinGameRequest,
+  isStartGameRequest,
 } from "./function-types/types";
-import { gameCollection, userCollection } from "./firestore-types/references";
+import { gameCollection, getRoomsCollection, userCollection } from "./firestore-types/references";
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
-import { getProfilePic } from "./helper";
+import { generateRandomNumbers, generateRandomOperation, getProfilePic } from "./helper";
 import { firestoreDB } from "./admin";
+import { uid } from "./firestore-types/game";
 
 export const createGame = functions.https.onCall(async (data: unknown, context): Promise<CreateGameResponse> => {
   const { auth } = context;
@@ -216,6 +218,52 @@ export const deleteInvite = functions.https.onCall(async (data: unknown, context
 
     transaction.update(userDocRef, {
       invites: FieldValue.arrayRemove(transformData),
+    });
+  });
+});
+
+export const startGame = functions.https.onCall(async (data: unknown, context): Promise<void> => {
+  const { auth } = context;
+
+  if (auth === undefined) {
+    throw new functions.https.HttpsError("unauthenticated", "You are not signed in!");
+  }
+
+  // validate data
+  if (!isStartGameRequest(data)) {
+    throw new functions.https.HttpsError("invalid-argument", "Invalid Start Game Request!");
+  }
+
+  await firestoreDB.runTransaction(async (transaction) => {
+    const gameDocRef = gameCollection.doc(data.gameId);
+    const gameSnapshot = await transaction.get(gameDocRef);
+    const game = gameSnapshot.data();
+
+    if (!gameSnapshot.exists || game === undefined) {
+      throw new functions.https.HttpsError("not-found", "Game doesn't exist!");
+    }
+
+
+    if (game.playersPublic[auth.uid].host === undefined) {
+      throw new functions.https.HttpsError("permission-denied", "Not allowed to invite players!");
+    }
+
+    const playerUids: uid[] = Object.keys(game.playersPublic);
+
+    for (const uid of playerUids) {
+      const playerRoomDoc = getRoomsCollection(gameDocRef).doc(uid);
+      const operation = generateRandomOperation();
+      const [numOne, numTwo] = generateRandomNumbers();
+
+      transaction.create(playerRoomDoc, {
+        operation,
+        numOne,
+        numTwo,
+      });
+    }
+
+    transaction.update(gameDocRef, {
+      state: "GAME",
     });
   });
 });
