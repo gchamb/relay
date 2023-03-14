@@ -15,14 +15,17 @@ export type PlayerPublic = {
   host?: true;
 };
 
+export const operations = ["+", "-", "÷", "x"] as const;
 /**
- * the type of documents `/games/{gameId}/players/{uid}`
- */
-export type Player = {
-  question?: string;
-  corrects: number;
-  incorrects: number;
-};
+*
+*  the type of documents `/games/{ gameId }/rooms/{ uid }`
+*/
+export type Room = {
+  operation: typeof operations[number];
+  numOne: number;
+  numTwo: number;
+  hasAnswered?: boolean;
+}
 
 /**
  * the type of documents `/games/{gameId}`
