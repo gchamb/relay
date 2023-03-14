@@ -243,7 +243,6 @@ export const startGame = functions.https.onCall(async (data: unknown, context): 
       throw new functions.https.HttpsError("not-found", "Game doesn't exist!");
     }
 
-
     if (game.playersPublic[auth.uid].host === undefined) {
       throw new functions.https.HttpsError("permission-denied", "Not allowed to invite players!");
     }

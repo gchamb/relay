@@ -8,9 +8,9 @@ export const userCollection = collection(firestore, "users") as CollectionRefere
 export const gamesCollection = collection(firestore, "games") as CollectionReference<Game>;
 
 export function getGameDoc(gameId: string): DocumentReference<Game> {
-    return doc(gamesCollection, gameId) as DocumentReference<Game>
+  return doc(gamesCollection, gameId) as DocumentReference<Game>;
 }
 
 export function getPlayerRoom(gameId: string, userId: uid): DocumentReference<Room> {
-    return doc(getGameDoc(gameId), `/rooms/${userId}`) as DocumentReference<Room>;
+  return doc(getGameDoc(gameId), `/rooms/${userId}`) as DocumentReference<Room>;
 }

@@ -11,7 +11,11 @@ export function properCase(name: string) {
   return firstChar + name.substring(1, name.length).toLowerCase();
 }
 
-export function generateOptions(numOne: number, numTwo: number, operation: Room["operation"]): { options: [number, number, number], answer: number } {
+export function generateOptions(
+  numOne: number,
+  numTwo: number,
+  operation: Room["operation"]
+): { options: [number, number, number]; answer: number } {
   // TODO: make sure the answer isn't doupicated twice
   // TODO: make sure only answers to the second decimal place
   switch (operation) {
@@ -26,28 +30,26 @@ export function generateOptions(numOne: number, numTwo: number, operation: Room[
       const optionSubOne = Math.floor(numOne + Math.random() * answerSub);
       const optionSubTwo = Math.floor(numTwo + Math.random() * answerSub);
 
-      return { options: [optionSubOne, optionSubTwo, answerSub], answer: answerSub }
+      return { options: [optionSubOne, optionSubTwo, answerSub], answer: answerSub };
     case "x":
       const answerMult = numOne * numTwo;
       const optionMultOne = Math.floor(numOne + Math.random() * answerMult);
       const optionMultTwo = Math.floor(numTwo + Math.random() * answerMult);
 
-      return { options: [optionMultOne, optionMultTwo, answerMult], answer: answerMult }
+      return { options: [optionMultOne, optionMultTwo, answerMult], answer: answerMult };
 
     case "÷":
       const answerDiv = numOne / numTwo;
       const optionDivOne = Math.floor(numOne + Math.random() * answerDiv);
       const optionDivTwo = Math.floor(numTwo + Math.random() * answerDiv);
 
-      return { options: [optionDivOne, optionDivTwo, answerDiv], answer: answerDiv }
-
+      return { options: [optionDivOne, optionDivTwo, answerDiv], answer: answerDiv };
   }
-
 }
 
 /**
- * 
- * @param array 
+ *
+ * @param array
  * @returns shuffles the current elements in the array
  * @note uses the Richard Durstenfeld algorithm to shuffle
  */
